@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- <script src="jq.js"></script> -->
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        body {
+            background: url('./imgs/background.png') 0% 0%/cover;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .enemy {
+            width: 80px;
+            height: 80px;
+            background: url('./enemy.png');
+            animation: enemy 1s infinite steps(3);
+            position: absolute;
+            right: 100px;
+            z-index: 20;
+        }
+
+        @keyframes enemy {
+            to {
+                background-position: right;
+            }
+        }
+
+        #player {
+            background: url('./player.png');
+            height: 40px;
+            width: 100px;
+            position: absolute;
+            top: 50%;
+            animation: player .85s infinite steps(3);
+            z-index: 50;
+        }
+
+        @keyframes player {
+            to {
+                background-position: right;
+            }
+        }
+
+        .yun {
+            background: url('./imgs/aestroid-2.png');
+            position: absolute;
+            animation: yun 1.5s infinite steps(30);
+            width: 80px;
+            height: 80px;
+            z-index: 50;
+            top: -80px;
+        }
+
+        @keyframes yun {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .zidan {
+            width: 60px;
+            height: 4px;
+            background: #f90;
+            position: absolute;
+            box-shadow: 0px 0px 40px 10px #f90;
+        }
+
+        .move {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            width: 550px;
+            height: 300px;
+            display: none;
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            flex-flow: column;
+        }
+
+        .move span {
+            font-size: 1.8rem;
+        }
+
+        .move button {
+            width: 200px;
+            height: 40px;
+            margin-top: 40px;
+            background: none;
+            cursor: pointer;
+        }
+
+        .fenshu {
+            color: #fff;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 90px;
+            height: 35px;
+            padding-right: 10px;
+            box-sizing: border-box;
+        }
+
+        .fenshu span {
+            font-size: 1rem;
+            display: block;
+            margin-right: 14px;
+            z-index: 10;
+        }
+
+        .fenshu img {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .shengming {
+            width: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 20;
+        }
+
+        .shengming div {
+            width: 30%;
+        }
+
+        .shengming div img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .kai {
+            width: 100%;
+            height: 100%;
+            background: url('./pexels-faik-akmd-1025469.jpg') 50% 50%/cover;
+            position: fixed;
+            z-index: 120;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-flow: column;
+        }
+
+        .kai img {
+            width: 320px;
+            height: 220px;
+        }
+
+        .kai .qidong button {
+            width: 340px;
+            height: 100px;
+            background: none;
+            color: #fff;
+            font-size: 1.4rem;
+            border: 2px solid #fff;
+            background: linear-gradient(rgba(151, 212, 255, 0.6), rgba(255, 132, 61, 0.6));
+            cursor: pointer;
+            margin-top: 30px;
+        }
+
+        .kai .qidong button:hover {
+            border: 2px solid red;
+        }
+
+        .xue {
+            width: 50px;
+            height: 50px;
+            background: url('./love.png') 50% 50%/cover;
+            position: absolute;
+            z-index: 100;
+        }
+
+        .bull {
+            width: 60px;
+            height: 4px;
+            background: rgb(89, 153, 255);
+            position: absolute;
+            transform: translateY(-50%);
+            box-shadow: 0px 0px 40px 10px rgb(89, 153, 255);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="kai">
+        <img src="./imgs/logo.png" alt="">
+        <div class="qidong">
+
+            <button>开始游戏</button>
+        </div>
+    </div>
+    <div class="shengming">
+        <div><img src="like.png" alt=""></div>
+        <div><img src="like.png" alt=""></div>
+        <div><img src="like.png" alt=""></div>
+    </div>
+    <div class="fenshu"><span>0</span> <img src="./imgs/icon-score.png" alt=""></div>
+    <div id="player"></div>
+    <div class="move">
+        <span>
+            Geamove
+        </span>
+        <button>刷新再来一次</button>
+    </div>
+</body>
+<script>
+    document.querySelector('.kai .qidong button').onclick = () => {
+        document.querySelector('.kai').style.display = 'none';
+        var play = document.getElementById("player"),
+            enem = document.querySelectorAll(".enemy"),
+            gemover = document.querySelector(".move"),
+            sm = document.querySelectorAll('.shengming div img'),
+            active = true;
+        //结算页面的再来一次
+        document.querySelector(".move button").onclick = function () {
+            location.reload();
+        }
+        var fenshu = 0;
+        var shengming = 3;
+        // 敌人和子弹数组
+        var zidanArr = [],
+            enemarr = [],
+            xuearr = [],
+            yunarr = [],
+            bulletarr = [];
+
+
+        //键盘监听
+        var tops = false,
+            bottoms = false,
+            lefts = false,
+            rights = false,
+            bullets = false;
+        document.onkeydown = (e) => {
+            switch (e.keyCode) {
+                case 32:
+                    bullets = true;
+                    break;
+                case 87:
+                    tops = true;
+                    break;
+                case 65:
+                    lefts = true;
+                    break;
+                case 68:
+                    rights = true;
+                    break;
+                case 83:
+                    bottoms = true;
+                    break;
+            }
+        }
+        document.onkeyup = (e) => {
+            switch (e.keyCode) {
+                case 32:
+                    bullets = false;
+                    break;
+                case 87:
+                    tops = false;
+                    break;
+                case 65:
+                    lefts = false;
+                    break;
+                case 68:
+                    rights = false;
+                    break;
+                case 83:
+                    bottoms = false;
+                    break;
+            }
+        }
+        setInterval(() => {
+            if (tops) {
+                play.style.top = Math.max(0, play.offsetTop - 10) + "px";
+            }
+            if (lefts) {
+                play.style.left = Math.max(0, play.offsetLeft - 10) + "px";
+            }
+            if (bottoms) {
+                play.style.top = Math.min(document.body.offsetHeight - 20, play.offsetTop + 10) + "px";
+            }
+            if (rights) {
+                play.style.left = Math.min(document.body.offsetWidth - 100, play.offsetLeft + 10) + "px";
+            }
+        }, 20);
+
+
+        //定义血包的独立属性
+        var off_on = true;
+
+
+        // 火箭子弹生成
+        setInterval(() => {
+            if (bullets) {
+                //createElement 创建一个元素
+                let div = document.createElement('div');
+                div.className = "zidan";
+                // appendChild 
+                document.body.appendChild(div);
+                // push 向数组添加这个元素 并将新长度返回
+                zidanArr.push(div);
+                let x = play.offsetLeft;
+                let y = play.offsetTop;
+                div.style.left = x + 20 + 'px';
+                div.style.top = y + 20 + 'px';
+            }
+        }, 100);
+
+
+        //敌人生成
+        var direntimer = setInterval(() => {
+            let y = parseInt(Math.random() * (document.body.offsetHeight - 80));
+            let diren = document.createElement('div');
+            diren.className = 'enemy';
+            diren.style.top = y + 'px';
+            document.body.appendChild(diren);
+            diren.setAttribute("off", "true");
+            enemarr.push(diren)
+        }, 3000);
+
+
+        //陨石生成
+        var yuntimer = setInterval(() => {
+            let x = parseInt(Math.random() * (document.body.offsetWidth));
+            let yuns = document.createElement('div');
+            yuns.className = 'yun';
+            yuns.style.left = x + 'px';
+            document.body.appendChild(yuns);
+            yunarr.push(yuns);
+        }, 3500);
+
+
+        //敌人子弹生成
+        var direntimers = setInterval(() => {
+            for (x in enemarr) {
+                if (enemarr[x].getAttribute("off") == "true") {
+                    // 发射子弹
+                    let bull = document.createElement('div');
+                    bull.className = "bull";
+                    document.body.appendChild(bull);
+                    bulletarr.push(bull);
+                    for (n in enemarr) {
+                        let x = enemarr[n].offsetLeft + 20;
+                        let y = enemarr[n].offsetTop + 20;
+                        bull.style.left = x - 10 + 'px';
+                        bull.style.top = y + 20 + 'px';
+                    }
+                }
+            }
+        }, 900);
+
+        var timer = setInterval(() => {
+            for (let i = 0; i < zidanArr.length; i++) {
+                //火箭子弹移动
+                zidanArr[i].style.left = zidanArr[i].offsetLeft + 30 + 'px';
+
+
+                //子弹命中敌人效果
+                for (let x = 0; x < enemarr.length; x++) {
+                    if (zidanArr[i].offsetLeft + zidanArr[i].offsetWidth > enemarr[x].offsetLeft && zidanArr[i].offsetTop > enemarr[x].offsetTop && zidanArr[i].offsetTop + zidanArr[i].offsetHeight < enemarr[x].offsetTop + enemarr[x].offsetHeight) {
+
+
+                        //血包掉落
+                        let sjs = parseInt(Math.random() * 10);
+                        let bao = document.createElement('div');
+                        if (sjs == 1) {
+                            bao.className = 'xue';
+                            document.body.appendChild(bao);
+                            bao.style.top = enemarr[x].offsetTop + 'px';
+                            bao.style.left = enemarr[x].offsetLeft + 'px';
+                            //自定义属性
+                            bao.setAttribute("off", "true");
+                            xuearr.push(bao);
+                        }
+
+
+                        //删除子弹及敌人并加分
+                        enemarr[x].remove();
+                        enemarr.splice(x, 1);
+                        zidanArr[i].remove();
+                        zidanArr.splice(i, 1);
+                        fenshu += 10;
+                        document.querySelector('.fenshu span').innerHTML = fenshu;
+                    }
+                }
+
+
+                //子弹击中陨石
+                for (v in yunarr) {
+                    if (zidanArr[i].offsetLeft + zidanArr[i].offsetWidth > yunarr[v].offsetLeft && zidanArr[i].offsetTop > yunarr[v].offsetTop && zidanArr[i].offsetTop + zidanArr[i].offsetHeight < yunarr[v].offsetTop + yunarr[v].offsetHeight && zidanArr[i].offsetLeft < yunarr[v].offsetLeft + yunarr[v].offsetWidth) {
+                        zidanArr[i].remove();
+                        zidanArr.splice(i, 1);
+                        yunarr[v].remove();
+                        yunarr.splice(v, 1);
+                        fenshu += 5;
+                        document.querySelector('.fenshu span').innerHTML = fenshu;
+                    }
+                }
+            }
+
+
+            //陨石移动
+            for (z in yunarr) {
+                yunarr[z].style.top = yunarr[z].offsetTop + 3 + 'px';
+                yunarr[z].style.left = yunarr[z].offsetLeft - 3 + 'px';
+            }
+
+
+            //敌人子弹移动
+            for (g in bulletarr) {
+                bulletarr[g].style.left = bulletarr[g].offsetLeft - 15 + 'px';
+            }
+
+
+            //敌人移动
+            for (x in enemarr) {
+                enemarr[x].style.left = enemarr[x].offsetLeft - 3 + 'px';
+            }
+
+
+            //敌人子弹超出消失
+            for (g in bulletarr) {
+                if (bulletarr[g].offsetLeft < document.body.offsetLeft - 10) {
+                    bulletarr[g].remove();
+                    bulletarr.splice(g, 1);
+                }
+            }
+
+
+            //火箭子弹飞出边界消失
+            for (let i = 0; i < zidanArr.length; i++) {
+                if (zidanArr[i].offsetLeft > document.body.offsetWidth - 80) {
+                    zidanArr[i].remove();
+                    zidanArr.splice(i, 1);
+                }
+            }
+
+
+            //陨石超出删除
+            for (z in yunarr) {
+                if (yunarr[z].offsetTop > document.body.offsetTop + document.body.offsetHeight) {
+                    yunarr[z].remove();
+                    yunarr.splice(z, 1);
+                }
+            }
+
+
+            //敌人超出边界删除
+            for (x in enemarr) {
+                if (enemarr[x].offsetLeft + document.body.offsetWidth < document.body.offsetWidth) {
+                    enemarr[x].remove();
+                    enemarr.splice(x, 1);
+                }
+            }
+
+
+            //血包移动
+            for (v in xuearr) {
+                if (xuearr[v].getAttribute("off") == "true") {
+                    xuearr[v].style.top = xuearr[v].offsetTop - 3 + 'px';
+                    xuearr[v].style.left = xuearr[v].offsetLeft - 3 + 'px';
+                    if (xuearr[v].offsetTop < 3) {
+                        xuearr[v].setAttribute("off", "false");
+                    }
+
+                }
+                if (xuearr[v].getAttribute("off") == "false") {
+                    xuearr[v].style.top = xuearr[v].offsetTop + 3 + 'px';
+                    xuearr[v].style.left = xuearr[v].offsetLeft - 3 + 'px';
+                    if (xuearr[v].offsetTop > document.body.offsetHeight - xuearr[v].offsetHeight) {
+                        xuearr[v].setAttribute("off", "true")
+                    }
+                }
+                if (xuearr[v].offsetLeft < document.body.offsetLeft - 80) {
+                    xuearr[v].remove();
+                    xuearr.splice(v, 1);
+                }
+            }
+        }, 1000 / 60);
+
+
+
+        var yidongtimer = setInterval(() => {
+            for (let x = 0; x < enemarr.length; x++) {
+                //定义火箭碰撞变量
+                let play_s = play.offsetTop,
+                    play_z = play.offsetLeft,
+                    play_x = play.offsetTop + play.offsetHeight,
+                    play_y = play.offsetLeft + play.offsetWidth;
+
+
+                //火箭于陨石碰撞
+                for (z in yunarr) {
+                    if (play_s > yunarr[z].offsetTop && play_x < yunarr[z].offsetTop + yunarr[z].offsetHeight && play_y > yunarr[z].offsetLeft && play_z < yunarr[z].offsetLeft + yunarr[z].offsetWidth ||
+                        play_s < yunarr[z].offsetTop && play_x > yunarr[z].offsetTop && play_y > yunarr[z].offsetLeft && play_z < yunarr[z].offsetLeft + yunarr[z].offsetWidth ||
+                        play_s < yunarr[z].offsetTop + yunarr[z].offsetHeight && play_x > yunarr[z].offsetTop + yunarr[z].offsetHeight && play_y > yunarr[z].offsetLeft && play_z < yunarr[z].offsetLeft + enemarr[x].offsetWidth ||
+                        play_y < yunarr[z].offsetLeft + yunarr[z].offsetHeight && play_s > yunarr[z].offsetTop && play_x < yunarr[z].offsetTop + yunarr[z].offsetHeight && play_y > yunarr[z].offsetLeft + enemarr[x].offsetWidth) {
+                        yunarr[z].remove();
+                        yunarr.splice(z, 1);
+                        shengming--;
+                    }
+                }
+
+
+                //敌方子弹于火箭碰撞
+                for (g in bulletarr) {
+                    if (play_s > bulletarr[g].offsetTop && play_x < bulletarr[g].offsetTop + bulletarr[g].offsetHeight && play_y > bulletarr[g].offsetLeft && play_z < bulletarr[g].offsetLeft + bulletarr[g].offsetWidth ||
+                        play_s < bulletarr[g].offsetTop && play_x > bulletarr[g].offsetTop && play_y > bulletarr[g].offsetLeft && play_z < bulletarr[g].offsetLeft + bulletarr[g].offsetWidth ||
+                        play_s < bulletarr[g].offsetTop + bulletarr[g].offsetHeight && play_x > bulletarr[g].offsetTop + bulletarr[g].offsetHeight && play_y > bulletarr[g].offsetLeft && play_z < bulletarr[g].offsetLeft + enemarr[x].offsetWidth ||
+                        play_y < bulletarr[g].offsetLeft + bulletarr[g].offsetHeight && play_s > bulletarr[g].offsetTop && play_x < bulletarr[g].offsetTop + bulletarr[g].offsetHeight && play_y > bulletarr[g].offsetLeft + enemarr[x].offsetWidth) {
+                        bulletarr[g].remove();
+                        bulletarr.splice(g, 1);
+                        shengming--;
+                    }
+                }
+
+
+                //火箭于血包碰撞
+                for (z in xuearr) {
+                    if (play_s > xuearr[z].offsetTop && play_x < xuearr[z].offsetTop + xuearr[z].offsetHeight && play_y > xuearr[z].offsetLeft && play_z < xuearr[z].offsetLeft + xuearr[z].offsetWidth ||
+                        play_s < xuearr[z].offsetTop && play_x > xuearr[z].offsetTop && play_y > xuearr[z].offsetLeft && play_z < xuearr[z].offsetLeft + xuearr[z].offsetWidth ||
+                        play_s < xuearr[z].offsetTop + xuearr[z].offsetHeight && play_x > xuearr[z].offsetTop + xuearr[z].offsetHeight && play_y > xuearr[z].offsetLeft && play_z < xuearr[z].offsetLeft + xuearr[z].offsetWidth ||
+                        play_y < xuearr[z].offsetLeft + xuearr[z].offsetHeight && play_s > xuearr[z].offsetTop && play_x < xuearr[z].offsetTop + xuearr[z].offsetHeight && play_y > xuearr[z].offsetLeft + enemarr[x].offsetWidth) {
+                        if (shengming < 3) {
+                            xuearr[v].remove();
+                            xuearr.splice(v, 1);
+                            shengming++
+                            switch (shengming) {
+                                case 3:
+                                    sm[2].style.display = 'block';
+                                    break;
+                                case 2:
+                                    sm[1].style.display = 'block';
+                                    break;
+                            }
+                        }
+                    }
+                }
+
+
+                //火箭于敌人碰撞
+                if (play_s > enemarr[x].offsetTop && play_x < enemarr[x].offsetTop + enemarr[x].offsetHeight && play_y > enemarr[x].offsetLeft && play_z < enemarr[x].offsetLeft + enemarr[x].offsetWidth ||
+                    //正面偏上相撞
+                    play_s < enemarr[x].offsetTop && play_x > enemarr[x].offsetTop && play_y > enemarr[x].offsetLeft && play_z < enemarr[x].offsetLeft + enemarr[x].offsetWidth ||
+                    //正面相撞
+                    play_s < enemarr[x].offsetTop + enemarr[x].offsetHeight && play_x > enemarr[x].offsetTop + enemarr[x].offsetHeight && play_y > enemarr[x].offsetLeft && play_z < enemarr[x].offsetLeft + enemarr[x].offsetWidth ||
+                    //正面偏下
+                    play_y < enemarr[x].offsetLeft + enemarr[x].offsetHeight && play_s > enemarr[x].offsetTop && play_x < enemarr[x].offsetTop + enemarr[x].offsetHeight && play_y > enemarr[x].offsetLeft + enemarr[x].offsetWidth) {
+                    //尾巴相撞
+                    enemarr[x].remove();
+                    enemarr.splice(x, 1);
+                    shengming--;
+                }
+            }
+
+            //生命值判断
+            switch (shengming) {
+                case 2:
+                    sm[2].style.display = 'none';
+                    break;
+                case 1:
+                    sm[1].style.display = 'none';
+                    break;
+                case 0:
+                    //游戏结束
+                    sm[0].style.display = 'none';
+                    gemover.style.display = 'flex';
+                    clearInterval(timer);
+                    clearInterval(yidongtimer);
+                    clearInterval(direntimer);
+                    clearInterval(yuntimer);
+                    clearInterval(direntimers);
+                    document.onkeydown = (e) => {
+                    }
+                    break;
+            }
+        }, 1000 / 60);
+    }
+            //     var div = document.getElementsByTagName("div")[0];
+        // var x = 10;
+        // var y = 10;
+        // console.log(document.body.clientHeight);
+
+        // setInterval(function () {
+        //     if (div.offsetTop > document.body.clientHeight - 110 || div.offsetTop < 0) {
+        //         x = -x
+        //     }
+        //     div.style.top = div.offsetTop + x + "px"
+        //     if (div.offsetLeft > document.body.clientWidth - 110 || div.offsetLeft < 0) {
+        //         y = -y
+        //     }
+        //     div.style.left = div.offsetLeft + y + "px"
+
+        // }, 30)
+
+        // //调用碰撞方法
+        // setInterval(() => {
+        //     for (let i in enemarr) {
+        //         let e = enemarr[i];
+        //         for (let j in zidanArr) {
+        //             let z = zidanArr[j];
+        //             if (check(e,z)) {
+        //                 e.remove();
+        //                 enemarr.splice(i, 1);
+        //                 z.remove();
+        //                 zidanarr.splice(j, 1);
+        //             }
+        //         }
+
+        //     }
+        // }, 1000 / 20)
+
+
+        // //获取对象碰撞边界，建立碰撞条件
+        // function check(a, b) {
+        //     var aRect = a.getBoundingClientRect();
+        //     var bRect = b.getBoundingClientRect();
+        //     if (aRect.right >= bRect.left && aRect.bottom >= bRect.top && aRect.left <= bRect.right && aRect.top <= aRect.bottom) {
+        //         return true;
+        //     }
+        //     return false;
+        // }
+</script>
+
+</html>
