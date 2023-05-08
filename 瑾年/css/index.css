@@ -1,0 +1,258 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+ul,
+li {
+    list-style: none;
+}
+
+body {
+    font: #333 18px 'Microsoft YaHei';
+}
+
+a {
+    font: #333 18px 'Microsoft YaHei';
+    text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: normal;
+}
+
+.wrap {
+    width: 1200px;
+    margin: 0 auto;
+}
+header{
+    position: relative;
+}
+header nav {
+    background: none;
+    width: 100%;
+    height: 80px;
+    position: fixed;
+    z-index: 100;
+    top: 80px;
+    transition: all .8s;
+}
+
+header nav .wrap {
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+header nav .wrap .left {
+    width: 40%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+header nav .wrap .left img {
+    width: 40%;
+    height: 130%;
+}
+
+header nav .wrap .right {
+    width: 40%;
+    display: flex;
+    justify-content: space-between;
+}
+
+header nav .wrap .right a {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.3rem;
+    display: block;
+    color: #fff;
+    width: 22%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    transition: all .4s;
+}
+
+header nav .wrap .right a:hover {
+    color: #f90;
+    background: #fff;
+}
+
+header .back {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+}
+
+header .back li {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    transition: all 2.8s;
+    opacity: 0;
+}
+
+header .back .move{
+    opacity: 1;
+}
+header .btn {
+    width: 12%;
+    height: 8px;
+    margin: 0px auto;
+    position: relative;
+    top: -40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+header .btn span{
+    width: 25%;
+    height: 100%;
+    background: rgba(0,0,0,.8);
+    cursor: pointer;
+}
+header .btn span.fff{
+    background: #fff;
+}
+header .btns{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 10px;
+    box-sizing: border-box;
+    position: absolute;
+    top: 50%;
+}
+header .btns>div{
+    cursor: pointer;
+}
+main{
+    background: url('../image/beijing.jpeg') fixed 50% 50%/cover;
+}
+main>div{
+    padding: 60px 0px;
+    background: rgb(250, 250, 250);
+}
+main>div .tit{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 40px;
+}
+main>div .tit h2{
+    font-size: 1.8rem;
+}
+main>div .tit a{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: 100%;
+    background: rgb(250, 35, 35);
+    color: #fff;
+    border-radius: 20px;
+}
+main .news ul{
+    display: flex;
+    flex-wrap: wrap;
+}
+main .news ul li{
+    flex: 1 30%;
+    margin: 20px;
+    height: 400px;
+}
+main .news ul li a {
+    display: block;
+    width: 100%;
+    height: 100%;
+    color: #000;
+    box-shadow: 0px 0px 10px #999;
+}
+main .news ul li a:hover img{
+    transform: scale(1.2);
+}
+main .news ul li a i{
+    width: 100%;
+    height: 55%;
+    display: block;
+    overflow: hidden;
+}
+main .news ul li a img{
+    width: 100%;
+    height: 100%;
+    display: block;
+    transition: all .8s;
+    object-fit: cover;
+}
+main .news ul li a div{
+    width: 100%;
+    height: 45%;
+    padding-left: 10px;
+    display: flex;
+    justify-content: center;
+    flex-flow: column;
+    box-sizing: border-box;
+}
+main .news ul li a div h3{
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+}
+main .news ul li a div p{
+    font-size: .9rem;
+    line-height: 1.6;
+}
+main .news ul li a div span{
+    display: block;
+    margin-top: 10px;
+    font-size: 0.8rem;
+}
+main .tiao{
+    background: rgba(0,0,0,.5);
+}
+main .tiao .wrap{
+    color: #fff;
+    padding: 15px;
+    height: 350px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-flow: column;
+}
+main .tiao .wrap h2{
+    font-size: 2rem;
+    text-align: center;
+}
+main .tiao .wrap span{
+    display: block;
+    text-align: center;
+    line-height: 1.8;
+    width: 60%;
+    margin: 30px auto;
+    font-size: 0.9rem;
+}
+main .tiao .wrap a{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    width: 100px;
+    height: 40px;
+    border: 1px solid #fff;
+    color: #fff;
+    transition: all .5s;
+}
+main .tiao .wrap a:hover{
+    border: 1px solid #f90;
+    color: #f90;
+}
+main .riji .wrap{
+    display: flex;
+    justify-content: space-between;
+}
